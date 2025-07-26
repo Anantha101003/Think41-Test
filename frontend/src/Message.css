@@ -1,0 +1,28 @@
+.chat-message {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.chat-message.user .role {
+  color: #2e86de;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.chat-message.ai .role {
+  color: #44bd32;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.chat-message .content {
+  background: #f1f2f6;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 320px;
+}
+
+.chat-message.ai .content {
+  background: #eafaf1;
+}

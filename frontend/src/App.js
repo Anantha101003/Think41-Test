@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ChatWindow from "./ChatWindow";
 import "./App.css";
 
 const API_URL = "http://localhost:8000/api/chat";
@@ -42,36 +43,13 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <header>
-        <h1>Conversational AI Agent</h1>
-      </header>
-      <main>
-        <div className="chat-window">
-          {messages.length === 0 && <div className="empty-chat">Start the conversation!</div>}
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`chat-message ${msg.role}`}>
-              <span className="role">{msg.role === "user" ? "You" : "AI"}:</span>
-              <span className="content">{msg.content}</span>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-        <form className="chat-input" onSubmit={sendMessage}>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            disabled={loading}
-            autoFocus
-          />
-          <button type="submit" disabled={loading || !input.trim()}>
-            {loading ? "..." : "Send"}
-          </button>
-        </form>
-      </main>
-    </div>
+    <ChatWindow
+      messages={messages}
+      input={input}
+      setInput={setInput}
+      onSend={sendMessage}
+      loading={loading}
+    />
   );
 }
 
