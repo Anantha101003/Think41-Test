@@ -7,6 +7,7 @@ This project implements a conversational AI chatbot for an e-commerce clothing s
 ```
 ├── backend/     # Backend service with API endpoints and database
 ├── frontend/    # Frontend UI for the chatbot interface
+├── data/        # E-commerce CSV dataset files
 └── README.md    # This file
 ```
 
@@ -19,7 +20,10 @@ The chatbot can handle queries like:
 
 ## Development Progress
 
-- [x] Milestone 1: Environment Setup
+- [x] Milestone 1: Environment Setup ✅
+  - Created GitHub repository
+  - Set up backend and frontend folders
+  - Downloaded e-commerce dataset with 6 CSV files
 - [ ] Milestone 2: Database Setup and Data Ingestion
 - [ ] Milestone 3: Data Schemas
 - [ ] Milestone 4: Core Chat API
