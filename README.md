@@ -26,6 +26,56 @@ The chatbot can handle queries like:
 - [x] Milestone 4: Core Chat API
 - [x] Milestone 5: LLM Integration and Business Logic
 - [x] Milestone 6: Frontend Implementation
+- [x] Milestone 7: Client-side State Management
+- [x] Milestone 8: Conversation History Panel
+
+## Milestone Details
+
+### 1. Environment Setup
+- Project structure created for backend (FastAPI), frontend (React), and data ingestion.
+- Python virtual environment and Node.js project initialized.
+- `.gitignore` and `.env` files set up for security and best practices.
+
+### 2. Database Setup and Data Ingestion
+- SQLAlchemy models defined for e-commerce entities: DistributionCenter, Product, User, Order, OrderItem, InventoryItem.
+- Data ingestion script (`load_data.py`) loads CSV datasets into the database.
+- Supports SQLite by default; PostgreSQL available via Docker Compose (`backend/docker-compose.yml`).
+- To use PostgreSQL, run:
+  ```sh
+  cd backend
+  docker-compose up -d
+  # Set DATABASE_URL in .env to:
+  # postgresql://postgres:password@localhost:5432/ecommerce_chatbot
+  ```
+
+### 3. Data Schemas
+- Database schemas for all e-commerce entities and conversation history.
+- ConversationSession and ConversationMessage models support multi-user, multi-session chat.
+
+### 4. Core Chat API
+- FastAPI backend exposes `/api/chat` endpoint.
+- Accepts user messages, persists them, and returns full conversation history.
+- API supports multi-session, multi-user chat.
+
+### 5. LLM Integration and Business Logic
+- Integrates Groq LLM API for AI-powered responses.
+- Stores Groq API key securely in `.env`.
+- Implements clarifying question logic if user input is ambiguous.
+- Placeholder for business logic to query e-commerce data and provide smart responses.
+
+### 6. Frontend Implementation
+- React app (PWA) created for chat UI.
+- Connects to backend `/api/chat` endpoint.
+- Core chat window, message display, user input, and session persistence.
+
+### 7. Client-side State Management
+- Uses React Context API to manage message list, loading status, and user input value.
+- Centralizes state for scalability and maintainability.
+
+### 8. Conversation History Panel
+- Modern sidebar UI displays all past user sessions.
+- Users can click a session to load its full chat history instantly.
+- Fully integrated with backend session APIs.
 
 ## Tech Stack
 
