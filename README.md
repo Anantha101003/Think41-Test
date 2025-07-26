@@ -86,8 +86,37 @@ The chatbot can handle queries like:
 
 ## Getting Started
 
-### 1. Backend Setup
+### 1. Dockerized Deployment (Recommended)
 
+The easiest way to run the full stack is with Docker Compose. This will launch the PostgreSQL database, backend, and frontend services together.
+
+#### Prerequisites
+- [Docker](https://www.docker.com/get-started) and [Docker Compose](https://docs.docker.com/compose/) installed
+- Groq API key (get yours from https://console.groq.com/)
+
+#### Steps
+1. Clone the repository and navigate to the project root.
+2. Create a `.env` file at the project root with your API key:
+   ```sh
+   echo GROQ_API_KEY=your_groq_api_key > .env
+   ```
+3. Start all services:
+   ```sh
+   docker-compose up --build
+   ```
+   - The backend will be available at [http://localhost:8000](http://localhost:8000)
+   - The frontend will be available at [http://localhost:3000](http://localhost:3000)
+   - PostgreSQL database runs in a container
+4. (First time only) Ingest data into the database:
+   ```sh
+   docker-compose exec backend python load_data.py
+   ```
+
+### 2. Manual Local Setup (Advanced)
+
+If you prefer to run services manually:
+
+#### Backend
 ```sh
 cd backend
 python -m venv venv
@@ -100,8 +129,7 @@ python load_data.py  # Ingest e-commerce CSV data
 uvicorn main:app --reload
 ```
 
-### 2. Frontend Setup
-
+#### Frontend
 ```sh
 cd frontend
 npm install
