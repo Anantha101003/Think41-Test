@@ -12,6 +12,7 @@ export function ChatProvider({ children }) {
   const [userId, setUserId] = useState(() => localStorage.getItem("user_id") || "user-" + Math.random().toString(36).slice(2, 10));
   const [conversationId, setConversationId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [sessions, setSessions] = useState([]);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -21,6 +22,37 @@ export function ChatProvider({ children }) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Fetch all sessions for the user
+  useEffect(() => {
+    async function fetchSessions() {
+      try {
+        const res = await fetch(`http://localhost:8000/api/sessions?user_id=${userId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSessions(data.sessions);
+        }
+      } catch {}
+    }
+    fetchSessions();
+  }, [userId, conversationId]);
+
+  // Load a session by id
+  const loadSession = async (id) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`http://localhost:8000/api/session/${id}`);
+      if (!res.ok) throw new Error("API error");
+      const data = await res.json();
+      setConversationId(data.conversation_id);
+      setMessages(data.messages);
+      setInput("");
+    } catch (err) {
+      alert("Failed to load session: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -59,6 +91,8 @@ export function ChatProvider({ children }) {
         setLoading,
         sendMessage,
         messagesEndRef,
+        sessions,
+        loadSession,
       }}
     >
       {children}

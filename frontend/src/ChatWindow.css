@@ -1,0 +1,29 @@
+.chat-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.chat-main header {
+  background: #2e86de;
+  color: #fff;
+  padding: 18px 30px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.chat-main main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  overflow-y: auto;
+}

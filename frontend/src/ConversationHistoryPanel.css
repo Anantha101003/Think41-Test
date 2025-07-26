@@ -1,0 +1,40 @@
+.history-panel {
+  width: 220px;
+  background: #f7f7fa;
+  border-right: 1px solid #e1e1e1;
+  padding: 20px 0 0 0;
+  height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+}
+.history-panel h2 {
+  font-size: 1.1rem;
+  margin: 0 0 12px 24px;
+  color: #333;
+}
+.history-panel ul {
+  list-style: none;
+  padding: 0 0 0 24px;
+  margin: 0;
+}
+.history-panel li {
+  padding: 8px 0;
+  cursor: pointer;
+  color: #444;
+  border-left: 3px solid transparent;
+  transition: background 0.2s, border 0.2s;
+}
+.history-panel li.active {
+  background: #eafaf1;
+  border-left: 3px solid #44bd32;
+  font-weight: bold;
+}
+.history-panel li:hover {
+  background: #e1e1e1;
+}
+.history-panel li.empty {
+  color: #aaa;
+  font-style: italic;
+  cursor: default;
+}
