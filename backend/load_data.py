@@ -106,6 +106,35 @@ def load_users(db: Session, csv_path: str):
     print(f"✅ Loaded {len(df)} users")
 
 def load_orders(db: Session, csv_path: str):
+    """Load orders data, skipping orders with missing users for demo purposes."""
+    print("📦 Loading orders...")
+    df = pd.read_csv(csv_path)
+    # Get all user IDs from the users table
+    user_ids = set([u.id for u in db.query(User.id).all()])
+    skipped = 0
+    valid_orders = []
+    for _, row in df.iterrows():
+        if int(row['user_id']) not in user_ids:
+            print(f"⚠️ Skipping order {row['order_id']} due to missing user_id {row['user_id']}")
+            skipped += 1
+            continue
+        valid_orders.append(Order(
+            order_id=int(row['order_id']),
+            user_id=int(row['user_id']),
+            status=row['status'],
+            gender=row['gender'] if 'gender' in row else None,
+            created_at=parse_datetime(row['created_at']),
+            shipped_at=parse_datetime(row['shipped_at']),
+            num_of_item=int(row['num_of_item']) if pd.notna(row['num_of_item']) else None
+        ))
+    try:
+        db.bulk_save_objects(valid_orders)
+        db.commit()
+        print(f"✅ Loaded {len(valid_orders)} orders (skipped {skipped})")
+    except SQLAlchemyError as e:
+        print(f"❌ Error loading orders: {e}")
+        db.rollback()
+
     """Load orders data"""
     print("📋 Loading orders...")
     df = pd.read_csv(csv_path)
@@ -214,11 +243,17 @@ def main():
         print("❌ Database connection failed. Please check your database configuration.")
         return
     
-    # Create tables
+    # Drop all tables for a clean demo DB load
+    from database import Base, engine
+    Base.metadata.drop_all(bind=engine)
     create_tables()
     
     # Data directory
-    data_dir = os.path.join("..", "data")
+    # Use /data if running in Docker, else ../data for local
+    if os.path.exists("/data"):
+        data_dir = "/data"
+    else:
+        data_dir = os.path.join("..", "data")
     
     # Get database session
     db = SessionLocal()

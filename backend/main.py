@@ -9,6 +9,41 @@ from datetime import datetime
 
 app = FastAPI()
 
+from fastapi import Query
+
+# --- Conversation session/history endpoints ---
+@app.get("/api/sessions")
+def get_sessions(user_id: str = Query(...), db: Session = Depends(get_db)):
+    sessions = db.query(ConversationSession).filter_by(user_id=user_id).order_by(ConversationSession.created_at.desc()).all()
+    return {
+        "sessions": [
+            {
+                "conversation_id": s.id,
+                "created_at": s.created_at.isoformat(),
+                "updated_at": s.updated_at.isoformat(),
+            }
+            for s in sessions
+        ]
+    }
+
+@app.get("/api/session/{session_id}")
+def get_session(session_id: int, db: Session = Depends(get_db)):
+    session = db.query(ConversationSession).filter_by(id=session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    messages = db.query(ConversationMessage).filter_by(session_id=session_id).order_by(ConversationMessage.timestamp).all()
+    return {
+        "conversation_id": session.id,
+        "messages": [
+            {
+                "role": m.role,
+                "content": m.content,
+                "timestamp": m.timestamp.isoformat(),
+            }
+            for m in messages
+        ],
+    }
+
 # Allow CORS for local frontend development
 app.add_middleware(
     CORSMiddleware,
@@ -67,7 +102,7 @@ def chat_endpoint(payload: ChatRequest, db: Session = Depends(get_db)):
     # Gather conversation history for context
     messages = db.query(ConversationMessage).filter_by(session_id=session.id).order_by(ConversationMessage.timestamp).all()
     chat_history = [
-        {"role": m.role, "content": m.content} for m in messages
+        {"role": "assistant" if m.role == "ai" else m.role, "content": m.content} for m in messages
     ]
     chat_history.append({"role": "user", "content": payload.message})
 
@@ -79,12 +114,41 @@ def chat_endpoint(payload: ChatRequest, db: Session = Depends(get_db)):
     if needs_clarification(payload.message):
         ai_content = "Could you please clarify your request regarding our e-commerce services?"
     else:
+        # --- Product lookup and context enrichment for demo ---
+        import re
+        from models import Product
+        product_keywords = ["shirt","cap","hat","swimsuit","bikini","shorts","jacket","jeans","pant","dress","skirt","top","t-shirt","blouse","sweater","hoodie","coat","scarf","sock","shoe","sandal","boot","glove","belt","bag","purse","wallet","watch","suit","blazer","vest","tie"]
+        user_msg = payload.message.lower()
+        found = None
+        for kw in product_keywords:
+            if kw in user_msg:
+                found = kw
+                break
+        color_match = re.search(r"(red|blue|black|white|navy|khaki|olive|plaid|camo|solid|print|stripe|grey|gray|beige|brown|orange|gold|silver|ivory|maroon|teal|aqua|coral|mint|peach|lime|mustard|burgundy|charcoal|denim|tan|turquoise|magenta|cream|off[- ]white|multicolor|violet|indigo|bronze|rose|wine|cherry|lemon|emerald|sapphire|ruby|pearl|copper|blush|fuchsia|mauve|taupe|camel|sand|rust|slate|peacock|eggplant|orchid|mocha|espresso|latte|cobalt|sky|seafoam|forest|pine|sage|spruce|mint|apple|melon|berry|stone|ash|cloud|smoke|storm|shadow|dove|graphite|midnight|ocean|ice|frost|snow)", user_msg, re.IGNORECASE)
+        color = color_match.group(1) if color_match else None
+        products = []
+        if found:
+            query = db.query(Product)
+            if color:
+                query = query.filter(Product.name.ilike(f"%{color}%"))
+            query = query.filter(Product.name.ilike(f"%{found}%"))
+            products = query.limit(3).all()
+        # Build product context for LLM
+        product_context = ""
+        if products:
+            product_context = "Available products matching your request:\n"
+            for p in products:
+                product_context += f"- {p.name} (Category: {p.category}, Brand: {p.brand}, Price: ${p.retail_price})\n"
+        # Add product context as system prompt if any
+        llm_messages = chat_history.copy()
+        if product_context:
+            llm_messages.insert(0, {"role": "system", "content": product_context})
         # Call Groq LLM
         client = Groq(api_key=GROQ_API_KEY)
         try:
             response = client.chat.completions.create(
                 model="llama3-8b-8192",
-                messages=[{"role": m["role"], "content": m["content"]} for m in chat_history],
+                messages=[{"role": m["role"], "content": m["content"]} for m in llm_messages],
                 max_tokens=256,
                 temperature=0.7,
             )

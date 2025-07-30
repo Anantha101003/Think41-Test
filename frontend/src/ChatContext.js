@@ -27,7 +27,7 @@ export function ChatProvider({ children }) {
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const res = await fetch(`http://localhost:8000/api/sessions?user_id=${userId}`);
+        const res = await fetch(`/api/sessions?user_id=${userId}`);
         if (res.ok) {
           const data = await res.json();
           setSessions(data.sessions);
@@ -41,7 +41,7 @@ export function ChatProvider({ children }) {
   const loadSession = async (id) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/session/${id}`);
+      const res = await fetch(`/api/session/${id}`);
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
       setConversationId(data.conversation_id);
@@ -59,7 +59,7 @@ export function ChatProvider({ children }) {
     if (!input.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: userId, message: input, conversation_id: conversationId }),

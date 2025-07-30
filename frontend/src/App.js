@@ -4,16 +4,7 @@ import ChatWindow from "./ChatWindow";
 import "./App.css";
 
 function AppContent() {
-  const { messages, input, setInput, sendMessage, loading } = useChat();
-  return (
-    <ChatWindow
-      messages={messages}
-      input={input}
-      setInput={setInput}
-      onSend={sendMessage}
-      loading={loading}
-    />
-  );
+  return <ChatWindow />;
 }
 
 function App() {

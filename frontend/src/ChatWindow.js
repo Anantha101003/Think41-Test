@@ -6,7 +6,7 @@ import { useChat } from "./ChatContext";
 import "./ChatWindow.css";
 
 function ChatWindow() {
-  const { messages, input, setInput, onSend, loading, sessions, conversationId, loadSession } = useChat();
+  const { messages, input, setInput, sendMessage, loading, sessions, conversationId, loadSession } = useChat();
   return (
     <div className="app-container chat-layout">
       <ConversationHistoryPanel sessions={sessions} onSelect={loadSession} currentId={conversationId} />
@@ -16,7 +16,7 @@ function ChatWindow() {
         </header>
         <main>
           <MessageList messages={messages} />
-          <UserInput input={input} setInput={setInput} onSend={onSend} loading={loading} />
+          <UserInput input={input} setInput={setInput} onSend={sendMessage} loading={loading} />
         </main>
       </div>
     </div>
