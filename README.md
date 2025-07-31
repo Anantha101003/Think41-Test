@@ -8,6 +8,47 @@ A production-ready, conversational AI chatbot for e-commerce clothing sites. Thi
 
 ---
 
+## Interview Prep & Talking Points
+
+### How to Present This Project in Interviews
+
+**Project Summary:**
+- Built a full-stack e-commerce chatbot with real product lookup using FastAPI (Python), React, PostgreSQL, Docker, and Groq LLM.
+- Demonstrates end-to-end skills: backend, frontend, database, API integration, and deployment.
+
+### Key Technical Choices & Why
+- **FastAPI**: Modern Python web framework, async support, easy to document APIs.
+- **SQLAlchemy + PostgreSQL**: Robust ORM and scalable relational database.
+- **React (Context API)**: Modern, maintainable UI with centralized state.
+- **Groq LLM integration**: Demonstrates ability to work with external APIs and prompt engineering.
+- **Docker Compose**: Simplifies local and demo deployment, mirrors production best practices.
+
+### Challenges Solved
+- **LLM Prompt Engineering**: Injected real product data into LLM context for accurate, data-driven answers.
+- **Session & Message Persistence**: Designed schemas for multi-user, multi-session chat history.
+- **CORS & API Routing**: Used Nginx and FastAPI middleware to ensure smooth frontend-backend communication.
+- **Data Ingestion**: Automated loading of e-commerce CSVs, handling missing/dirty data for demo reliability.
+- **Clarification Logic**: Implemented robust intent detection to avoid unnecessary clarification prompts.
+
+### Sample Interview Questions & Answers
+
+**Q: How does your chatbot return real product data?**
+A: The backend parses the user's message for product keywords and color, queries the Product table, and injects the top matches as a system prompt to the LLM. This grounds the AI's answer in actual inventory.
+
+**Q: Why did you use Docker Compose?**
+A: It lets me run the full stack (database, backend, frontend) with one command, making local development and demos reliable and production-like.
+
+**Q: How do you handle ambiguous user requests?**
+A: I implemented a needs_clarification function that checks for product/service keywords. If absent, the bot asks the user to clarify, improving the user experience.
+
+**Q: What would you improve or add if you had more time?**
+A: I’d add automated tests, more advanced intent extraction (e.g., spaCy or transformers), and deploy it live for public access.
+
+**Q: How do you ensure security of API keys and user data?**
+A: Secrets are managed in a .env file, never hardcoded or committed. The backend validates all input and uses parameterized queries via SQLAlchemy.
+
+---
+
 ## 1. Architecture Overview
 
 ```
