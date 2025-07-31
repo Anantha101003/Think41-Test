@@ -201,7 +201,7 @@ Response: Full conversation history (including LLM and user messages)
 ---
 
 ## 11. Credits
-- Built by [Your Team/Name]
+- Built by [G. Anantha Narayanan]
 - Powered by Groq, FastAPI, React, PostgreSQL
 
 ---
