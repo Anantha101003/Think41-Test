@@ -12,7 +12,7 @@ function ChatWindow() {
       <ConversationHistoryPanel sessions={sessions} onSelect={loadSession} currentId={conversationId} />
       <div className="chat-main">
         <header>
-          <h1>Conversational AI Agent</h1>
+          <h1>Ecommerce Chatbot</h1>
         </header>
         <main>
           <MessageList messages={messages} />

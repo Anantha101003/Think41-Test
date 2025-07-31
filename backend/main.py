@@ -108,8 +108,18 @@ def chat_endpoint(payload: ChatRequest, db: Session = Depends(get_db)):
 
     # Clarifying question logic (simple example)
     def needs_clarification(message):
-        keywords = ["order", "product", "return", "status", "inventory"]
-        return not any(k in message.lower() for k in keywords)
+        keywords = [
+            # Core e-commerce
+            "order", "product", "return", "status", "inventory", "buy", "purchase", "shop", "available", "find", "show", "list", "price", "cost", "stock", "quantity", "details", "info", "information", "catalog", "brand", "category", "size", "color", "coloured", "discount", "sale", "offer", "deal", "new", "latest", "best", "top", "recommend", "suggest",
+            # Apparel/products
+            "shirt", "t-shirt", "tee", "cap", "hat", "swimsuit", "bikini", "shorts", "jacket", "jeans", "pant", "trouser", "dress", "skirt", "top", "blouse", "sweater", "hoodie", "coat", "scarf", "sock", "shoe", "sandal", "boot", "glove", "belt", "bag", "purse", "wallet", "watch", "suit", "blazer", "vest", "tie", "sneaker", "loafer", "flip-flop", "slipper", "outerwear", "activewear", "sportswear", "underwear", "lingerie", "nightwear", "sleepwear",
+            # Gender/target
+            "men", "man", "male", "women", "woman", "female", "ladies", "girls", "boys", "kids", "children", "unisex", "youth", "adult", "teen", "child", "baby",
+            # Conversational/contextual
+            "this", "that", "these", "those", "option", "item", "one", "ones", "more", "another", "something", "anything", "other", "similar", "like", "type", "kind", "sort"
+        ]
+        msg = message.lower()
+        return not any(k in msg for k in keywords)
 
     if needs_clarification(payload.message):
         ai_content = "Could you please clarify your request regarding our e-commerce services?"
